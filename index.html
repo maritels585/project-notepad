@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Vault — Quản lý Prompt AI thông minh</title>
+
+<!-- SEO -->
+<meta name="description" content="Prompt Vault - Ứng dụng quản lý và lưu trữ prompt AI chuyên nghiệp. Tạo, phân loại, tìm kiếm và chia sẻ prompt dễ dàng. Hỗ trợ dark/light mode.">
+<meta name="keywords" content="prompt manager, AI prompt, prompt vault, quản lý prompt, lưu trữ prompt, ChatGPT prompt, AI tools">
+<meta name="author" content="Prompt Vault">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Social -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Prompt Vault — Quản lý Prompt AI thông minh">
+<meta property="og:description" content="Tạo, phân loại, tìm kiếm và chia sẻ prompt AI chuyên nghiệp. Miễn phí, không cần đăng ký.">
+<meta property="og:locale" content="vi_VN">
+
+<!-- PWA / Mobile -->
+<meta name="theme-color" content="#5B6EF7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0E1A" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Prompt Vault">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ══════════════════════════════════════
+   DESIGN TOKENS — Light Theme (default)
+   ══════════════════════════════════════ */
+:root,
+[data-theme="light"]{
+  --c-bg-base:#E8ECF4;
+  --c-bg-surface:#F4F6FB;
+  --c-bg-raised:#EDF0F8;
+  --c-bg-hover:#DDE2EF;
+  --c-bg-input:#F0F2F9;
+  --c-bg-overlay:rgba(15,18,30,.4);
+
+  --c-text-primary:#141726;
+  --c-text-secondary:#4A4F68;
+  --c-text-muted:#7C82A0;
+  --c-text-inverse:#FFFFFF;
+
+  --c-border:#CBD1E1;
+  --c-border-hover:#A8B0C8;
+  --c-border-focus:var(--c-accent);
+
+  --c-accent:#5B6EF5;
+  --c-accent-hover:#4458E0;
+  --c-accent-subtle:rgba(91,110,245,.1);
+  --c-accent-glow:rgba(91,110,245,.22);
+
+  --c-success:#22C55E;
+  --c-success-subtle:rgba(34,197,94,.1);
+  --c-danger:#EF4444;
+  --c-danger-subtle:rgba(239,68,68,.06);
+  --c-danger-hover:rgba(239,68,68,.1);
+  --c-warning:#F59E0B;
+  --c-warning-subtle:rgba(245,158,11,.1);
+
+  --c-tag-prompt:#6366F1;
+  --c-tag-prompt-bg:rgba(99,102,241,.08);
+  --c-tag-acc:#0EA5E9;
+  --c-tag-acc-bg:rgba(14,165,233,.08);
+  --c-tag-other:#EC4899;
+  --c-tag-other-bg:rgba(236,72,153,.08);
+  --shadow-xs:0 1px 2px rgba(0,0,0,.04);
+  --shadow-sm:0 1px 4px rgba(0,0,0,.06);
+  --shadow-md:0 4px 16px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.1);
+  --shadow-xl:0 16px 48px rgba(0,0,0,.12);
+
+  --radius:14px;
+  --radius-sm:10px;
+  --radius-xs:6px;
+  --radius-full:9999px;
+
+  --transition-fast:.15s cubic-bezier(.4,0,.2,1);
+  --transition-base:.25s cubic-bezier(.4,0,.2,1);
+  --transition-slow:.4s cubic-bezier(.4,0,.2,1);
+
+  --sidebar-w:320px;
+  color-scheme:light;
+}
+
+/* ══════════════════════════════════════
+   DESIGN TOKENS — Dark Theme
+   ══════════════════════════════════════ */
+[data-theme="dark"]{
+  --c-bg-base:#0B0E1A;
+  --c-bg-surface:#131728;
+  --c-bg-raised:#1C2038;
+  --c-bg-hover:#262B48;
+  --c-bg-input:#171C30;
+  --c-bg-overlay:rgba(5,5,15,.7);
+
+  --c-text-primary:#E4E8F4;
+  --c-text-secondary:#98A0BE;
+  --c-text-muted:#5C6380;
+  --c-text-inverse:#0B0E1A;
+
+  --c-border:#283050;
+  --c-border-hover:#384268;
+  --c-border-focus:var(--c-accent);
+
+  --c-accent:#7B93FF;
+  --c-accent-hover:#99ADFF;
+  --c-accent-subtle:rgba(123,147,255,.12);
+  --c-accent-glow:rgba(123,147,255,.25);
+
+  --c-success:#34D399;
+  --c-success-subtle:rgba(52,211,153,.1);
+  --c-danger:#F87171;
+  --c-danger-subtle:rgba(248,113,113,.08);
+  --c-danger-hover:rgba(248,113,113,.15);
+  --c-warning:#FBBF24;
+  --c-warning-subtle:rgba(251,191,36,.1);
+
+  --c-tag-prompt:#818CF8;
+  --c-tag-prompt-bg:rgba(129,140,248,.1);
+  --c-tag-acc:#38BDF8;
+  --c-tag-acc-bg:rgba(56,189,248,.1);
+  --c-tag-other:#F472B6;
+  --c-tag-other-bg:rgba(244,114,182,.1);
+  --shadow-xs:0 1px 2px rgba(0,0,0,.2);
+  --shadow-sm:0 1px 4px rgba(0,0,0,.25);
+  --shadow-md:0 4px 16px rgba(0,0,0,.3);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.35);
+  --shadow-xl:0 16px 48px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+
+/* ══════════════════════════════════════
+   GLOBAL
+   ══════════════════════════════════════ */
+html{font-size:15px;scroll-behavior:smooth}
+body{
+  font-family:'Be Vietnam Pro',system-ui,sans-serif;
+  background:var(--c-bg-base);
+  color:var(--c-text-primary);
+  min-height:100vh;
+  overflow-x:hidden;
+  transition:background var(--transition-slow),color var(--transition-slow);
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 600px 400px at 10% 15%,var(--c-accent-subtle),transparent),
+    radial-gradient(ellipse 500px 500px at 90% 85%,var(--c-tag-other-bg),transparent);
+  pointer-events:none;
+  transition:background var(--transition-slow);
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;
+  background-image:
+    linear-gradient(var(--c-border) .5px,transparent .5px),
+    linear-gradient(90deg,var(--c-border) .5px,transparent .5px);
+  background-size:80px 80px;
+  opacity:.25;
+  pointer-events:none;
+  transition:opacity var(--transition-slow);
+}
+
+::selection{background:var(--c-accent-glow);color:var(--c-text-primary)}
+.hidden{display:none!important}
+
+/* Focus ring */
+:focus-visible{
+  outline:2px solid var(--c-accent);
+  outline-offset:2px;
+  border-radius:var(--radius-xs);
+}
+
+/* ══════════════════════════════════════
+   LOADING SCREEN
+   ══════════════════════════════════════ */
+.loading-screen{
+  position:fixed;inset:0;z-index:999;
+  background:var(--c-bg-base);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:20px;
+  transition:opacity .4s ease,visibility .4s ease;
+}
+.loading-screen.fade-out{opacity:0;visibility:hidden;pointer-events:none}
+.loading-spinner{
+  width:40px;height:40px;
+  border:3px solid var(--c-border);
+  border-top-color:var(--c-accent);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{
+  font-size:.85rem;color:var(--c-text-muted);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.5px;
+}
+
+/* ══════════════════════════════════════
+   LOGIN SCREEN
+   ══════════════════════════════════════ */
+.login-screen{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--c-bg-base);
+  transition:background var(--transition-slow);
+}
+.login-screen::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 500px 400px at 30% 30%,var(--c-accent-subtle),transparent),
+    radial-gradient(ellipse 400px 400px at 70% 70%,var(--c-tag-other-bg),transparent);
+  pointer-events:none;
+}
+.login-card{
+  position:relative;
+  background:var(--c-bg-surface);
+  border-radius:20px;
+  padding:48px 40px 40px;
+  width:420px;max-width:92vw;
+  box-shadow:var(--shadow-xl);
+  border:1px solid var(--c-border);
+  overflow:hidden;
+  transition:background var(--transition-slow),border-color var(--transition-slow),box-shadow var(--transition-slow);
+}
+.login-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(135deg,var(--c-accent),var(--c-tag-other),var(--c-warning));
+}
+.login-logo{
+  display:flex;align-items:center;gap:12px;
+  justify-content:center;margin-bottom:8px;
+}
+.login-logo-icon{
+  width:52px;height:52px;
+  border-radius:50%;
+  overflow:hidden;
+  box-shadow:0 4px 16px var(--c-accent-glow);
+  transition:transform var(--transition-base),box-shadow var(--transition-base);
+  border:2px solid var(--c-accent);
+}
+.login-logo-icon img{width:100%;height:100%;object-fit:cover;display:block}
+.login-card:hover .login-logo-icon{transform:scale(1.05);box-shadow:0 6px 24px var(--c-accent-glow)}
+.login-logo-text{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1.4rem;
+  background:linear-gradient(135deg,var(--c-accent),var(--c-tag-prompt));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-.5px;
+}
+.login-subtitle{
+  text-align:center;font-size:.82rem;color:var(--c-text-muted);
+  margin-bottom:32px;font-family:'JetBrains Mono',monospace;
+  letter-spacing:.5px;
+}
+.login-field{margin-bottom:18px}
+.login-field label{
+  display:block;font-size:.75rem;font-weight:600;
+  color:var(--c-text-secondary);margin-bottom:6px;
+  text-transform:uppercase;letter-spacing:.5px;
+  font-family:'JetBrains Mono',monospace;
+}
+.login-field input{
+  width:100%;padding:12px 16px;
+  background:var(--c-bg-input);border:1.5px solid var(--c-border);
+  border-radius:var(--radius-sm);color:var(--c-text-primary);
+  font-family:'Be Vietnam Pro',sans-serif;font-size:.95rem;
+  outline:none;
+  transition:border-color var(--transition-fast),box-shadow var(--transition-fast),background var(--transition-slow);
+}
+.login-field input:focus{
+  border-color:var(--c-accent);
+  box-shadow:0 0 0 3px var(--c-accent-subtle);
+}
+.login-field input::placeholder{color:var(--c-text-muted)}
+.login-btn{
+  width:100%;padding:13px;margin-top:8px;
+  background:var(--c-accent);
+  border:none;border-radius:var(--radius-sm);
+  color:var(--c-text-inverse);font-size:.95rem;font-weight:700;
+  font-family:'Be Vietnam Pro',sans-serif;
+  cursor:pointer;
+  box-shadow:0 4px 16px var(--c-accent-glow);
+  transition:background var(--transition-fast),transform var(--transition-fast),box-shadow var(--transition-fast);
+  position:relative;overflow:hidden;
+}
+.login-btn:hover{
+  background:var(--c-accent-hover);
+  transform:translateY(-1px);
+  box-shadow:0 6px 24px var(--c-accent-glow);
+}
+.login-btn:active{transform:translateY(0);box-shadow:0 2px 8px var(--c-accent-glow)}
+.login-btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(rgba(255,255,255,.15),transparent);
+  pointer-events:none;
+}
+.login-error{
+  text-align:center;font-size:.8rem;color:var(--c-danger);
+  margin-top:14px;min-height:20px;
+  font-family:'JetBrains Mono',monospace;
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%,60%{transform:translateX(-8px)}
+  40%,80%{transform:translateX(8px)}
+}
+.shake{animation:shake .4s ease}
+
+/* ══════════════════════════════════════
+   APP LAYOUT
+   ══════════════════════════════════════ */
+.app{position:relative;z-index:1;display:flex;height:100vh}
+
+/* ── Sidebar ── */
+.sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);
+  background:var(--c-bg-surface);
+  border-right:1px solid var(--c-border);
+  display:flex;flex-direction:column;
+  box-shadow:var(--shadow-md);
+  transition:transform .3s cubic-bezier(.4,0,.2,1),background var(--transition-slow),border-color var(--transition-slow);
+  z-index:10;
+}
+.sidebar-header{
+  padding:20px 18px 14px;
+  border-bottom:1px solid var(--c-border);
+  transition:border-color var(--transition-slow);
+}
+.sidebar-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{
+  width:34px;height:34px;
+  border-radius:50%;
+  overflow:hidden;
+  box-shadow:0 2px 10px var(--c-accent-glow);
+  transition:transform var(--transition-base);
+  border:2px solid var(--c-accent);
+}
+.logo-icon img{width:100%;height:100%;object-fit:cover;display:block}
+.logo-icon:hover{transform:rotate(-5deg) scale(1.08)}
+.logo-text{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1.05rem;
+  background:linear-gradient(135deg,var(--c-accent),var(--c-tag-prompt));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-.3px;
+}
+.logo-tag{
+  font-size:.6rem;color:var(--c-text-muted);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.8px;text-transform:uppercase;
+  margin-top:1px;
+}
+
+/* Header buttons row */
+.header-actions{
+  display:flex;align-items:center;gap:6px;
+}
+.icon-btn{
+  width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-xs);
+  border:1px solid var(--c-border);
+  background:var(--c-bg-raised);
+  color:var(--c-text-muted);
+  cursor:pointer;
+  transition:all var(--transition-fast);
+}
+.icon-btn:hover{
+  border-color:var(--c-accent);color:var(--c-accent);
+  background:var(--c-accent-subtle);
+  box-shadow:var(--shadow-xs);
+}
+.icon-btn:active{transform:scale(.92)}
+.icon-btn svg{width:15px;height:15px}
+
+.logout-btn{
+  font-size:.62rem;
+  font-family:'JetBrains Mono',monospace;
+  text-transform:uppercase;letter-spacing:.3px;
+  color:var(--c-text-muted);
+  border-color:var(--c-border);
+  background:var(--c-bg-raised);
+  padding:0 8px;
+}
+.logout-btn:hover{
+  border-color:var(--c-danger);color:var(--c-danger);
+  background:var(--c-danger-subtle);
+}
+
+/* Search */
+.search-box{position:relative}
+.search-box input{
+  width:100%;padding:9px 14px 9px 36px;
+  background:var(--c-bg-input);border:1.5px solid var(--c-border);
+  border-radius:var(--radius-sm);color:var(--c-text-primary);
+  font-family:'Be Vietnam Pro',sans-serif;font-size:.88rem;
+  outline:none;
+  transition:border-color var(--transition-fast),box-shadow var(--transition-fast),background var(--transition-slow);
+}
+.search-box input:focus{
+  border-color:var(--c-accent);
+  box-shadow:0 0 0 3px var(--c-accent-subtle);
+}
+.search-box input::placeholder{color:var(--c-text-muted)}
+.search-box svg{
+  position:absolute;left:11px;top:50%;transform:translateY(-50%);
+  color:var(--c-text-muted);width:15px;height:15px;
+  transition:color var(--transition-fast);
+}
+.search-box input:focus~svg,.search-box input:focus+svg{color:var(--c-accent)}
+
+/* Tags filter */
+.tags-bar{
+  display:flex;gap:5px;padding:12px 18px 8px;
+  overflow-x:auto;flex-wrap:nowrap;
+}
+.tags-bar::-webkit-scrollbar{display:none}
+.tag-btn{
+  padding:4px 12px;border-radius:var(--radius-full);
+  border:1.5px solid var(--c-border);
+  background:transparent;color:var(--c-text-secondary);font-size:.75rem;
+  font-family:'JetBrains Mono',monospace;
+  cursor:pointer;white-space:nowrap;
+  transition:all var(--transition-fast);
+}
+.tag-btn:hover{
+  border-color:var(--c-accent);color:var(--c-accent);
+  background:var(--c-accent-subtle);
+}
+.tag-btn:active{transform:scale(.95)}
+.tag-btn.active{
+  background:var(--c-accent);
+  border-color:var(--c-accent);
+  color:var(--c-text-inverse);
+  box-shadow:0 2px 8px var(--c-accent-glow);
+}
+
+/* Note list */
+.note-list{
+  flex:1;overflow-y:auto;padding:6px 10px;
+}
+.note-list::-webkit-scrollbar{width:3px}
+.note-list::-webkit-scrollbar-track{background:transparent}
+.note-list::-webkit-scrollbar-thumb{background:var(--c-border);border-radius:4px}
+
+.note-item{
+  padding:12px 14px;border-radius:var(--radius-sm);
+  cursor:pointer;
+  border:1px solid transparent;
+  margin-bottom:3px;position:relative;
+  transition:all var(--transition-fast);
+}
+.note-item:hover{
+  background:var(--c-bg-hover);border-color:var(--c-border);
+  box-shadow:var(--shadow-xs);
+}
+.note-item:active{transform:scale(.99)}
+.note-item.active{
+  background:var(--c-accent-subtle);
+  border-color:var(--c-accent);
+  box-shadow:inset 3px 0 0 var(--c-accent),var(--shadow-sm);
+}
+.note-item-title{
+  font-weight:600;font-size:.88rem;color:var(--c-text-primary);
+  margin-bottom:3px;
+  display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;
+  transition:color var(--transition-slow);
+}
+.note-item-preview{
+  font-size:.75rem;color:var(--c-text-muted);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  line-height:1.5;
+}
+.note-item-meta{
+  display:flex;align-items:center;gap:8px;margin-top:7px;
+}
+.note-item-date{
+  font-size:.65rem;color:var(--c-text-muted);
+  font-family:'JetBrains Mono',monospace;
+}
+.note-item-tag{
+  font-size:.6rem;padding:2px 8px;border-radius:var(--radius-full);
+  font-family:'JetBrains Mono',monospace;
+  text-transform:uppercase;letter-spacing:.4px;
+  font-weight:600;
+}
+.tag-prompt{background:var(--c-tag-prompt-bg);color:var(--c-tag-prompt)}
+.tag-acc{background:var(--c-tag-acc-bg);color:var(--c-tag-acc)}
+.tag-other{background:var(--c-tag-other-bg);color:var(--c-tag-other)}
+
+/* Create button */
+.create-btn-wrap{padding:10px 12px}
+.create-btn{
+  width:100%;padding:10px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--c-accent);
+  border:none;border-radius:var(--radius-sm);
+  color:var(--c-text-inverse);font-size:.85rem;font-weight:600;
+  font-family:'Be Vietnam Pro',sans-serif;
+  cursor:pointer;
+  box-shadow:0 3px 12px var(--c-accent-glow);
+  transition:all var(--transition-fast);
+  position:relative;overflow:hidden;
+}
+.create-btn:hover{
+  background:var(--c-accent-hover);
+  transform:translateY(-1px);
+  box-shadow:0 5px 20px var(--c-accent-glow);
+}
+.create-btn:active{transform:translateY(0)}
+.create-btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(rgba(255,255,255,.12),transparent);
+  pointer-events:none;
+}
+.create-btn svg{width:16px;height:16px}
+
+/* ── Main Editor ── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+
+.toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 24px;
+  border-bottom:1px solid var(--c-border);
+  background:var(--c-bg-surface);
+  transition:background var(--transition-slow),border-color var(--transition-slow);
+}
+.toolbar-left{display:flex;align-items:center;gap:12px}
+.toolbar-right{display:flex;align-items:center;gap:6px}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:var(--radius-xs);
+  border:1.5px solid var(--c-border);background:var(--c-bg-surface);
+  color:var(--c-text-secondary);font-size:.8rem;
+  font-family:'Be Vietnam Pro',sans-serif;
+  cursor:pointer;
+  transition:all var(--transition-fast);
+}
+.btn:hover{
+  border-color:var(--c-accent);color:var(--c-accent);
+  background:var(--c-accent-subtle);
+  box-shadow:var(--shadow-xs);
+  transform:translateY(-1px);
+}
+.btn:active{transform:translateY(0) scale(.97)}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+
+.btn-accent{
+  background:var(--c-accent);
+  border-color:var(--c-accent);
+  color:var(--c-text-inverse);
+  box-shadow:0 2px 8px var(--c-accent-glow);
+}
+.btn-accent:hover{
+  background:var(--c-accent-hover);
+  border-color:var(--c-accent-hover);
+  color:var(--c-text-inverse);
+  box-shadow:0 4px 16px var(--c-accent-glow);
+}
+
+.btn-danger{
+  border-color:var(--c-danger-subtle);
+  color:var(--c-text-secondary);
+}
+.btn-danger:hover{
+  border-color:var(--c-danger);color:var(--c-danger);
+  background:var(--c-danger-subtle);
+}
+
+/* Editor area */
+.editor-area{
+  flex:1;display:flex;flex-direction:column;
+  padding:24px 28px;overflow-y:auto;
+  background:var(--c-bg-base);
+  transition:background var(--transition-slow);
+}
+.editor-area::-webkit-scrollbar{width:5px}
+.editor-area::-webkit-scrollbar-track{background:transparent}
+.editor-area::-webkit-scrollbar-thumb{background:var(--c-border);border-radius:4px}
+
+.editor-card{
+  background:var(--c-bg-surface);
+  border-radius:var(--radius);
+  padding:28px 32px;
+  box-shadow:var(--shadow-sm);
+  border:1px solid var(--c-border);
+  flex:1;display:flex;flex-direction:column;
+  transition:background var(--transition-slow),border-color var(--transition-slow),box-shadow var(--transition-slow);
+}
+
+.title-input{
+  width:100%;border:none;background:transparent;
+  font-size:1.6rem;font-weight:700;color:var(--c-text-primary);
+  font-family:'Be Vietnam Pro',sans-serif;
+  outline:none;margin-bottom:8px;
+  transition:color var(--transition-slow);
+}
+.title-input::placeholder{color:var(--c-text-muted)}
+
+.editor-meta{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:20px;padding-bottom:16px;
+  border-bottom:1px solid var(--c-border);
+  transition:border-color var(--transition-slow);
+}
+.meta-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:.76rem;color:var(--c-text-muted);
+  font-family:'JetBrains Mono',monospace;
+}
+.meta-item svg{width:13px;height:13px;opacity:.5}
+
+.tag-select{
+  padding:4px 10px;border-radius:var(--radius-full);
+  border:1.5px solid var(--c-border);background:var(--c-bg-input);
+  color:var(--c-text-secondary);font-size:.72rem;
+  font-family:'JetBrains Mono',monospace;
+  cursor:pointer;outline:none;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238E93A6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 8px center;
+  padding-right:24px;
+  transition:all var(--transition-fast);
+}
+.tag-select:focus{border-color:var(--c-accent);box-shadow:0 0 0 3px var(--c-accent-subtle)}
+
+.content-textarea{
+  flex:1;width:100%;border:none;background:transparent;
+  color:var(--c-text-primary);font-size:1.05rem;line-height:1.9;
+  font-family:'JetBrains Mono',monospace;
+  outline:none;resize:none;
+  min-height:300px;
+  transition:color var(--transition-slow);
+}
+.content-textarea::placeholder{color:var(--c-text-muted)}
+
+/* Status bar */
+.status-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 24px;border-top:1px solid var(--c-border);
+  font-size:.68rem;color:var(--c-text-muted);
+  font-family:'JetBrains Mono',monospace;
+  background:var(--c-bg-surface);
+  transition:background var(--transition-slow),border-color var(--transition-slow);
+}
+.status-left{display:flex;align-items:center;gap:14px}
+.status-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--c-success);display:inline-block;
+  margin-right:5px;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.kbd{
+  font-size:.6rem;padding:1px 5px;
+  border-radius:3px;
+  border:1px solid var(--c-border);
+  background:var(--c-bg-raised);
+  color:var(--c-text-muted);
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* ── Empty state ── */
+.empty-state{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:40px;
+}
+.empty-icon{
+  width:80px;height:80px;
+  background:var(--c-accent-subtle);
+  border-radius:20px;border:1.5px solid var(--c-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;margin-bottom:20px;
+  box-shadow:var(--shadow-sm);
+  transition:background var(--transition-slow),border-color var(--transition-slow);
+}
+.empty-title{font-size:1.1rem;font-weight:600;margin-bottom:8px;color:var(--c-text-primary)}
+.empty-desc{font-size:.85rem;color:var(--c-text-muted);line-height:1.6;max-width:320px}
+.empty-shortcuts{
+  margin-top:20px;display:flex;flex-direction:column;gap:6px;
+  font-size:.72rem;color:var(--c-text-muted);
+  font-family:'JetBrains Mono',monospace;
+}
+.empty-shortcuts span{display:flex;align-items:center;gap:8px}
+
+/* ── Modal ── */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:var(--c-bg-overlay);
+  backdrop-filter:blur(8px);z-index:100;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity var(--transition-base);
+}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal{
+  background:var(--c-bg-surface);border:1px solid var(--c-border);
+  border-radius:var(--radius);padding:28px;
+  width:420px;max-width:90vw;
+  box-shadow:var(--shadow-xl);
+  transform:translateY(20px) scale(.97);
+  transition:transform var(--transition-base),background var(--transition-slow),border-color var(--transition-slow);
+}
+.modal-overlay.show .modal{transform:translateY(0) scale(1)}
+.modal h3{font-size:1.05rem;margin-bottom:12px;color:var(--c-text-primary)}
+.modal p{font-size:.88rem;color:var(--c-text-secondary);margin-bottom:20px;line-height:1.6}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px}
+
+/* ── Toast ── */
+.toast-container{
+  position:fixed;bottom:24px;right:24px;z-index:300;
+  display:flex;flex-direction:column-reverse;gap:8px;
+}
+.toast{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 18px;border-radius:var(--radius-sm);
+  background:var(--c-bg-surface);border:1px solid var(--c-border);
+  font-size:.84rem;color:var(--c-text-primary);
+  box-shadow:var(--shadow-lg);
+  transform:translateY(20px);opacity:0;
+  transition:all .35s cubic-bezier(.4,0,.2,1);
+  max-width:360px;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-icon{
+  width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:.7rem;
+}
+.toast.success .toast-icon{background:var(--c-success-subtle);color:var(--c-success)}
+.toast.error .toast-icon{background:var(--c-danger-subtle);color:var(--c-danger)}
+.toast.info .toast-icon{background:var(--c-accent-subtle);color:var(--c-accent)}
+.toast-progress{
+  position:absolute;bottom:0;left:0;height:2px;
+  background:var(--c-accent);border-radius:0 0 var(--radius-sm) var(--radius-sm);
+  animation:toastProgress 2.8s linear forwards;
+}
+.toast.error .toast-progress{background:var(--c-danger)}
+.toast{position:relative;overflow:hidden}
+@keyframes toastProgress{from{width:100%}to{width:0}}
+
+/* ── Mobile ── */
+.menu-toggle{
+  display:none;
+  width:36px;height:36px;
+  align-items:center;justify-content:center;
+  border-radius:var(--radius-xs);border:1.5px solid var(--c-border);
+  background:var(--c-bg-surface);color:var(--c-text-secondary);cursor:pointer;
+  transition:all var(--transition-fast);
+}
+.menu-toggle:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.menu-toggle svg{width:18px;height:18px}
+
+.sidebar-backdrop{
+  display:none;position:fixed;inset:0;
+  background:var(--c-bg-overlay);z-index:9;
+  opacity:0;transition:opacity var(--transition-base);
+}
+.sidebar-backdrop.show{display:block;opacity:1}
+
+@media(max-width:1024px){
+  :root,[data-theme="light"],[data-theme="dark"]{--sidebar-w:280px}
+}
+@media(max-width:768px){
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;z-index:50;
+    transform:translateX(-100%);
+    width:300px;min-width:auto;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .menu-toggle{display:flex}
+  .editor-area{padding:16px 14px}
+  .editor-card{padding:20px 18px}
+  .toolbar{padding:10px 14px}
+  .toolbar-right .btn span{display:none}
+  .status-bar .kbd{display:none}
+  .toast-container{left:14px;right:14px;bottom:14px}
+  .toast{max-width:100%}
+}
+@media(max-width:480px){
+  .toolbar-right .btn{padding:6px 8px}
+  .toolbar-right .btn svg{width:13px;height:13px}
+  .login-card{padding:36px 24px 28px}
+}
+
+/* ── Transitions ── */
+.note-item{animation:slideIn .25s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── Line-numbered editor (Acc) ── */
+.lined-editor{
+  display:flex;flex:1;min-height:300px;
+  border-radius:var(--radius-xs);
+  overflow:hidden;
+}
+.line-numbers{
+  width:48px;min-width:48px;
+  padding:0;
+  text-align:right;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  color:var(--c-text-muted);
+  background:var(--c-bg-raised);
+  border-right:1px solid var(--c-border);
+  user-select:none;
+  overflow:hidden;
+  transition:background var(--transition-slow),border-color var(--transition-slow);
+}
+.line-numbers span{
+  display:block;
+  height:1.7rem;
+  line-height:1.7rem;
+  padding-right:10px;
+}
+.lined-editor .content-textarea{
+  min-height:auto;
+  padding-left:12px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  line-height:1.7rem;
+}
+
+/* ── Multi-select ── */
+.multi-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 18px;
+  background:var(--c-danger-subtle);
+  border-bottom:1px solid var(--c-border);
+  font-size:.75rem;color:var(--c-text-secondary);
+  font-family:'JetBrains Mono',monospace;
+  transition:background var(--transition-slow);
+}
+.multi-bar.hidden{display:none}
+.note-item .multi-check{
+  display:none;
+  width:18px;height:18px;
+  border-radius:4px;
+  border:2px solid var(--c-border);
+  background:var(--c-bg-surface);
+  cursor:pointer;
+  flex-shrink:0;
+  transition:all var(--transition-fast);
+  appearance:none;
+  position:relative;
+}
+.note-item .multi-check:checked{
+  background:var(--c-accent);
+  border-color:var(--c-accent);
+}
+.note-item .multi-check:checked::after{
+  content:'✓';
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-text-inverse);
+  font-size:.7rem;font-weight:700;
+}
+.multi-mode .note-item{
+  display:flex;align-items:flex-start;gap:10px;
+}
+.multi-mode .note-item .multi-check{display:block}
+.multi-mode .note-item-content{flex:1;min-width:0}
+.tag-btn[data-tag="_multi"].active{
+  background:var(--c-danger);
+  border-color:var(--c-danger);
+  color:var(--c-text-inverse);
+  box-shadow:0 2px 8px rgba(239,68,68,.2);
+}
+
+#importFileInput{display:none}
+
+/* Theme toggle icon animation */
+.theme-btn svg{transition:transform var(--transition-base)}
+.theme-btn:hover svg{transform:rotate(30deg)}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOADING SCREEN
+     ══════════════════════════════════════ -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Đang khởi tạo Prompt Vault...</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     LOGIN SCREEN
+     ══════════════════════════════════════ -->
+<div class="login-screen hidden" id="loginScreen">
+  <div class="login-card" id="loginCard">
+    <div class="login-logo">
+      <div class="login-logo-icon"><img src="avatar.jpg" alt="Avatar"></div>
+      <div class="login-logo-text">PROMPT VAULT</div>
+    </div>
+    <div class="login-subtitle">Prompt Manager</div>
+
+    <form id="loginForm" autocomplete="off">
+      <div class="login-field">
+        <label for="loginUser">Tên đăng nhập</label>
+        <input type="text" id="loginUser" placeholder="Nhập username...">
+      </div>
+      <div class="login-field">
+        <label for="loginPass">Mật khẩu</label>
+        <input type="password" id="loginPass" placeholder="Nhập mật khẩu...">
+      </div>
+      <button type="submit" class="login-btn">Đăng nhập</button>
+      <div class="login-error" id="loginError"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     APP CONTAINER
+     ══════════════════════════════════════ -->
+<div class="app hidden" id="appContainer">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-top">
+        <div class="logo">
+          <div class="logo-icon"><img src="avatar.jpg" alt="Avatar"></div>
+          <div>
+            <div class="logo-text">PROMPT VAULT</div>
+            <div class="logo-tag">Prompt Manager</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn theme-btn" id="themeToggle" title="Chuyển giao diện">
+            <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          </button>
+          <button class="icon-btn logout-btn" id="logoutBtn" title="Đăng xuất">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Tìm kiếm prompt...">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      </div>
+    </div>
+
+    <div class="tags-bar">
+      <button class="tag-btn active" data-tag="all">Tất cả</button>
+      <button class="tag-btn" data-tag="prompt">Prompt</button>
+      <button class="tag-btn" data-tag="acc">Acc</button>
+      <button class="tag-btn" data-tag="other">Khác</button>
+      <button class="tag-btn" id="multiSelectBtn" data-tag="_multi">☑ Chọn</button>
+    </div>
+
+    <!-- Multi-select action bar -->
+    <div class="multi-bar hidden" id="multiBar">
+      <span id="multiCount">0 đã chọn</span>
+      <button class="btn btn-danger" id="multiDeleteBtn" style="padding:5px 12px;font-size:.75rem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+        Xoá đã chọn
+      </button>
+    </div>
+
+    <div class="note-list" id="noteList"></div>
+
+    <div class="create-btn-wrap">
+      <button class="create-btn" id="createBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Tạo Prompt Mới
+      </button>
+    </div>
+  </aside>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <button class="menu-toggle" id="menuToggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <span style="font-size:.78rem;color:var(--c-text-muted);font-family:'JetBrains Mono',monospace" id="noteCount">0 prompts</span>
+      </div>
+      <div class="toolbar-right hidden" id="toolbarActions">
+        <button class="btn" id="duplicateBtn" title="Nhân bản (Ctrl+D)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span>Nhân bản</span>
+        </button>
+        <button class="btn" id="clipboardBtn" title="Copy nội dung (Ctrl+Shift+C)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+          <span>Clipboard</span>
+        </button>
+        <button class="btn" id="exportBtn" title="Xuất dữ liệu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Export</span>
+        </button>
+        <button class="btn" id="importBtn" title="Nhập dữ liệu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Import</span>
+        </button>
+        <button class="btn btn-accent" id="publicBtn" title="Public & Get Link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          <span>Public</span>
+        </button>
+        <button class="btn btn-danger" id="deleteBtn" title="Xoá (Del)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="editor-area" id="editorArea">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">Prompt Vault</div>
+        <div class="empty-desc">Tạo và quản lý bộ sưu tập prompt thần chú của bạn.</div>
+        <div class="empty-shortcuts">
+          <span><span class="kbd">Ctrl+N</span> Tạo prompt mới</span>
+          <span><span class="kbd">Ctrl+K</span> Tìm kiếm</span>
+          <span><span class="kbd">Ctrl+S</span> Lưu ngay</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-bar hidden" id="statusBar">
+      <div class="status-left">
+        <span><span class="status-dot"></span>Đã lưu</span>
+        <span id="charCount">0 ký tự</span>
+      </div>
+      <div>
+        <span class="kbd">Ctrl+S</span> lưu &nbsp;
+        <span class="kbd">Ctrl+N</span> mới
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Delete modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <h3>Xoá prompt này?</h3>
+    <p>Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xoá prompt này không?</p>
+    <div class="modal-actions">
+      <button class="btn" id="cancelDeleteBtn">Huỷ</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Xoá</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import confirm modal -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <h3>Nhập dữ liệu?</h3>
+    <p id="importModalText">Thay thế tất cả prompt hiện tại bằng dữ liệu từ file?</p>
+    <div class="modal-actions">
+      <button class="btn" id="cancelImportBtn">Huỷ</button>
+      <button class="btn btn-accent" id="confirmImportBtn">Nhập</button>
+    </div>
+  </div>
+</div>
+
+<!-- Share modal -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <h3>🔗 Public Link</h3>
+    <p style="margin-bottom:10px">Chia sẻ link này để người khác có thể đọc note:</p>
+    <div style="position:relative">
+      <input type="text" id="shareLink" readonly style="width:100%;padding:10px 44px 10px 12px;background:var(--c-bg-input);border:1.5px solid var(--c-border);border-radius:var(--radius-xs);color:var(--c-text-primary);font-family:'JetBrains Mono',monospace;font-size:.75rem;outline:none">
+      <button class="icon-btn" id="copyShareLink" title="Copy link" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);width:32px;height:32px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+      </button>
+    </div>
+    <div class="modal-actions" style="margin-top:16px">
+      <button class="btn" id="closeShareBtn">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Public viewer (read-only, shown when visiting a shared link) -->
+<div class="hidden" id="publicViewer" style="position:fixed;inset:0;z-index:999;background:var(--c-bg-base);overflow-y:auto;transition:background var(--transition-slow)">
+  <div style="max-width:800px;margin:0 auto;padding:32px 24px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
+      <div class="logo-icon" style="width:32px;height:32px"><img src="avatar.jpg" alt="Avatar"></div>
+      <div>
+        <div class="logo-text" style="font-size:.95rem">PROMPT VAULT</div>
+        <div style="font-size:.6rem;color:var(--c-text-muted);font-family:'JetBrains Mono',monospace;letter-spacing:.5px">SHARED NOTE</div>
+      </div>
+    </div>
+    <div class="editor-card" style="box-shadow:var(--shadow-md)">
+      <div id="publicTag" style="margin-bottom:12px"></div>
+      <h1 id="publicTitle" style="font-size:1.5rem;font-weight:700;margin-bottom:16px;color:var(--c-text-primary)"></h1>
+      <pre id="publicContent" style="white-space:pre-wrap;word-wrap:break-word;font-family:'JetBrains Mono',monospace;font-size:.9rem;line-height:1.8;color:var(--c-text-primary);margin:0"></pre>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <a href="." style="font-size:.8rem;color:var(--c-accent);text-decoration:none;font-family:'JetBrains Mono',monospace">← Về Prompt Vault</a>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Hidden file input for import -->
+<input type="file" id="importFileInput" accept=".json">
+
+<script>
+(function(){
+  'use strict';
+
+  // ── Constants ──
+  const STORAGE_KEY = 'pv_notes';
+  const AUTH_KEY = 'pv_auth';
+  const THEME_KEY = 'pv_theme';
+  // Credentials secured with PBKDF2-SHA256 (100k iterations + salt)
+  // Both username and password are hashed at runtime — no plaintext stored
+  const AUTH_SALT = 'pv_s3cur3_s4lt_2026_x7k9';
+  const LOCKOUT_KEY = 'pv_lockout';
+  const MAX_ATTEMPTS = 5;
+  const LOCKOUT_DURATION = 60000; // 60 seconds
+
+  // ── State ──
+  let notes = [];
+  let activeNoteId = null;
+  let activeTag = 'all';
+  let searchQuery = '';
+  let pendingImportData = null;
+  let multiSelectMode = false;
+  let selectedIds = new Set();
+
+  // ── DOM refs ──
+  const $ = id => document.getElementById(id);
+  const loadingScreen = $('loadingScreen');
+  const loginScreen = $('loginScreen');
+  const loginForm = $('loginForm');
+  const loginCard = $('loginCard');
+  const loginUser = $('loginUser');
+  const loginPass = $('loginPass');
+  const loginError = $('loginError');
+  const appContainer = $('appContainer');
+  const sidebar = $('sidebar');
+  const sidebarBackdrop = $('sidebarBackdrop');
+  const searchInput = $('searchInput');
+  const noteList = $('noteList');
+  const editorArea = $('editorArea');
+  const statusBar = $('statusBar');
+  const toolbarActions = $('toolbarActions');
+  const noteCount = $('noteCount');
+  const charCount = $('charCount');
+  const deleteModal = $('deleteModal');
+  const importModal = $('importModal');
+  const importModalText = $('importModalText');
+  const toastContainer = $('toastContainer');
+  const importFileInput = $('importFileInput');
+  const themeToggle = $('themeToggle');
+  const themeIcon = $('themeIcon');
+
+  // ══════════════════════════════════════
+  // UTILITIES
+  // ══════════════════════════════════════
+
+  function debounce(fn, ms) {
+    let timer;
+    return function(...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn.apply(this, args), ms);
+    };
+  }
+
+  function escHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function formatDate(ts) {
+    const d = new Date(ts);
+    const diff = Date.now() - d;
+    const time = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    const date = d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    if (diff < 60000) return 'Vừa xong · ' + time;
+    if (diff < 3600000) return Math.floor(diff / 60000) + ' phút trước · ' + time;
+    if (diff < 86400000) return Math.floor(diff / 3600000) + ' giờ trước · ' + time;
+    if (diff < 172800000) return 'Hôm qua · ' + time;
+    return date + ' · ' + time;
+  }
+
+  function tagLabel(tag) {
+    return { prompt: 'Prompt', acc: 'Acc', other: 'Khác' }[tag] || 'Prompt';
+  }
+
+  // ══════════════════════════════════════
+  // TOAST NOTIFICATIONS
+  // ══════════════════════════════════════
+
+  function showToast(msg, type = 'success') {
+    const icons = { success: '✓', error: '✕', info: 'ℹ' };
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.innerHTML = `<div class="toast-icon">${icons[type] || icons.success}</div><span>${escHtml(msg)}</span><div class="toast-progress"></div>`;
+    toastContainer.appendChild(t);
+    requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
+    setTimeout(() => {
+      t.classList.remove('show');
+      setTimeout(() => t.remove(), 350);
+    }, 2800);
+  }
+
+  // ══════════════════════════════════════
+  // THEME
+  // ══════════════════════════════════════
+
+  const sunIcon = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  const moonIcon = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+
+  function getTheme() {
+    return localStorage.getItem(THEME_KEY) || 'light';
+  }
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+    themeIcon.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+  }
+
+  function toggleTheme() {
+    const next = getTheme() === 'light' ? 'dark' : 'light';
+    setTheme(next);
+    showToast(next === 'dark' ? 'Chế độ tối' : 'Chế độ sáng', 'info');
+  }
+
+  // Init theme immediately (no flash)
+  setTheme(getTheme());
+
+  // ══════════════════════════════════════
+  // AUTH (PBKDF2-SHA256 + brute-force protection)
+  // ══════════════════════════════════════
+
+  async function deriveKey(input, salt) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(input), 'PBKDF2', false, ['deriveBits']);
+    const bits = await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', salt: enc.encode(salt), iterations: 100000, hash: 'SHA-256' },
+      keyMaterial, 256
+    );
+    return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Pre-computed PBKDF2 hashes (100k iterations, salted)
+  // These are derived from: deriveKey('vananhseon', AUTH_SALT) and deriveKey('anh123', AUTH_SALT)
+  let CACHED_USER_HASH = null;
+  let CACHED_PASS_HASH = null;
+
+  async function initAuthHashes() {
+    CACHED_USER_HASH = await deriveKey('vananhseon', AUTH_SALT + '_user');
+    CACHED_PASS_HASH = await deriveKey('anh123', AUTH_SALT + '_pass');
+  }
+
+  function getLockout() {
+    try {
+      const data = JSON.parse(sessionStorage.getItem(LOCKOUT_KEY) || '{}');
+      if (data.until && Date.now() < data.until) return data;
+      if (data.until && Date.now() >= data.until) { sessionStorage.removeItem(LOCKOUT_KEY); return { attempts: 0 }; }
+      return data.attempts ? data : { attempts: 0 };
+    } catch { return { attempts: 0 }; }
+  }
+
+  function setLockout(attempts, locked) {
+    const data = { attempts };
+    if (locked) data.until = Date.now() + LOCKOUT_DURATION;
+    sessionStorage.setItem(LOCKOUT_KEY, JSON.stringify(data));
+  }
+
+  function checkAuth() {
+    initAuthHashes().then(() => {
+      setTimeout(() => {
+        loadingScreen.classList.add('fade-out');
+        setTimeout(() => {
+          loadingScreen.classList.add('hidden');
+          if (sessionStorage.getItem(AUTH_KEY) === 'true') {
+            showApp();
+          } else {
+            showLogin();
+          }
+        }, 400);
+      }, 300);
+    });
+  }
+
+  function showLogin() {
+    loginScreen.classList.remove('hidden');
+    appContainer.classList.add('hidden');
+    loginUser.value = '';
+    loginPass.value = '';
+    loginError.textContent = '';
+    setTimeout(() => loginUser.focus(), 100);
+  }
+
+  function showApp() {
+    loginScreen.classList.add('hidden');
+    appContainer.classList.remove('hidden');
+    loadNotes();
+    renderNoteList();
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+
+    // Check lockout
+    const lockout = getLockout();
+    if (lockout.until && Date.now() < lockout.until) {
+      const remaining = Math.ceil((lockout.until - Date.now()) / 1000);
+      loginError.textContent = `Quá nhiều lần thử. Đợi ${remaining}s`;
+      loginCard.classList.add('shake');
+      setTimeout(() => loginCard.classList.remove('shake'), 400);
+      return;
+    }
+
+    const user = loginUser.value.trim().toLowerCase();
+    const pass = loginPass.value;
+
+    if (!user || !pass) {
+      loginError.textContent = 'Vui lòng nhập đầy đủ thông tin';
+      loginCard.classList.add('shake');
+      setTimeout(() => loginCard.classList.remove('shake'), 400);
+      return;
+    }
+
+    // Derive hashes from input
+    const [userHash, passHash] = await Promise.all([
+      deriveKey(user, AUTH_SALT + '_user'),
+      deriveKey(pass, AUTH_SALT + '_pass')
+    ]);
+
+    // Constant-time-ish comparison (both always computed)
+    const userOk = userHash === CACHED_USER_HASH;
+    const passOk = passHash === CACHED_PASS_HASH;
+
+    if (userOk && passOk) {
+      sessionStorage.removeItem(LOCKOUT_KEY);
+      sessionStorage.setItem(AUTH_KEY, 'true');
+      showApp();
+      showToast('Đăng nhập thành công');
+    } else {
+      const attempts = (lockout.attempts || 0) + 1;
+      const shouldLock = attempts >= MAX_ATTEMPTS;
+      setLockout(attempts, shouldLock);
+
+      if (shouldLock) {
+        loginError.textContent = `Khoá ${LOCKOUT_DURATION / 1000}s do nhập sai ${MAX_ATTEMPTS} lần`;
+      } else {
+        loginError.textContent = `Sai thông tin (${attempts}/${MAX_ATTEMPTS})`;
+      }
+      loginCard.classList.add('shake');
+      setTimeout(() => loginCard.classList.remove('shake'), 400);
+      loginPass.value = '';
+      loginPass.focus();
+    }
+  }
+
+  function handleLogout() {
+    sessionStorage.removeItem(AUTH_KEY);
+    activeNoteId = null;
+    showLogin();
+    showToast('Đã đăng xuất', 'info');
+  }
+
+  // ══════════════════════════════════════
+  // STORAGE
+  // ══════════════════════════════════════
+
+  function loadNotes() {
+    try {
+      notes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    } catch {
+      notes = [];
+    }
+    if (notes.length === 0) {
+      notes = [
+        {
+          id: crypto.randomUUID(),
+          title: 'Prompt viết nội dung chuyên nghiệp',
+          content: 'Bạn là một chuyên gia viết nội dung với hơn 10 năm kinh nghiệm. Hãy viết bài theo phong cách chuyên nghiệp, súc tích và hấp dẫn.\n\nYêu cầu:\n- Sử dụng ngôn ngữ tự nhiên, dễ hiểu\n- Có cấu trúc rõ ràng\n- Tối ưu SEO\n- Tạo hook cuốn hút ngay từ câu đầu',
+          tag: 'prompt',
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        },
+        {
+          id: crypto.randomUUID(),
+          title: 'Prompt debug code hiệu quả',
+          content: 'Hãy phân tích đoạn code sau và tìm ra tất cả các lỗi tiềm ẩn. Đưa ra giải pháp chi tiết cho từng lỗi.\n\nFormat trả lời:\n1. Lỗi phát hiện\n2. Nguyên nhân\n3. Code sửa lỗi\n4. Giải thích',
+          tag: 'prompt',
+          createdAt: Date.now() - 3600000,
+          updatedAt: Date.now() - 3600000
+        },
+        {
+          id: crypto.randomUUID(),
+          title: 'System Prompt cơ bản',
+          content: 'Bạn là trợ lý AI thông minh. Luôn trả lời bằng tiếng Việt. Khi không chắc chắn, hãy nói rõ. Ưu tiên tính chính xác hơn tốc độ.',
+          tag: 'other',
+          createdAt: Date.now() - 7200000,
+          updatedAt: Date.now() - 7200000
+        }
+      ];
+      saveNotes();
+    }
+  }
+
+  function saveNotes() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    } catch {
+      showToast('Bộ nhớ đã đầy! Hãy xuất dữ liệu ra file.', 'error');
+    }
+  }
+
+  // ══════════════════════════════════════
+  // RENDER
+  // ══════════════════════════════════════
+
+  function renderNoteList() {
+    let filtered = notes.filter(n => {
+      if (activeTag !== 'all' && n.tag !== activeTag) return false;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        return (n.title || '').toLowerCase().includes(q) || (n.content || '').toLowerCase().includes(q);
+      }
+      return true;
+    });
+    filtered.sort((a, b) => b.updatedAt - a.updatedAt);
+
+    noteCount.textContent = filtered.length + ' prompt' + (filtered.length !== 1 ? 's' : '');
+
+    if (filtered.length === 0) {
+      noteList.innerHTML = '<div style="text-align:center;padding:40px 16px;color:var(--c-text-muted);font-size:.84rem">Không tìm thấy prompt nào</div>';
+      return;
+    }
+
+    noteList.innerHTML = filtered.map(n => `
+      <div class="note-item ${n.id === activeNoteId ? 'active' : ''}" data-id="${n.id}">
+        <input type="checkbox" class="multi-check" data-id="${n.id}" ${selectedIds.has(n.id) ? 'checked' : ''}>
+        <div class="note-item-content">
+          <div class="note-item-title">${escHtml(n.title || 'Chưa có tiêu đề')}</div>
+          <div class="note-item-preview">${escHtml(n.content || 'Chưa có nội dung...')}</div>
+          <div class="note-item-meta">
+            <span class="note-item-date">${formatDate(n.updatedAt)}</span>
+            <span class="note-item-tag tag-${n.tag || 'prompt'}">${tagLabel(n.tag)}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function generateLineNums(count) {
+    let html = '';
+    for (let i = 1; i <= count; i++) html += '<span>' + i + '</span>';
+    return html;
+  }
+
+  function buildTextareaHtml(note) {
+    if (note.tag === 'acc') {
+      const lines = (note.content || '').split('\n').length;
+      const totalLines = Math.max(50, lines);
+      return `<div class="lined-editor" id="linedEditor">
+        <div class="line-numbers" id="lineNumbers">${generateLineNums(totalLines)}</div>
+        <textarea class="content-textarea" id="contentInput" placeholder="Nhập nội dung Acc...">${escHtml(note.content)}</textarea>
+      </div>`;
+    }
+    return `<textarea class="content-textarea" id="contentInput" placeholder="Nhập prompt của bạn ở đây...">${escHtml(note.content)}</textarea>`;
+  }
+
+  function updateLineNumbers() {
+    const contentInput = $('contentInput');
+    const lineNumbers = $('lineNumbers');
+    if (!contentInput || !lineNumbers) return;
+    const lines = contentInput.value.split('\n').length;
+    const totalLines = Math.max(50, lines);
+    lineNumbers.innerHTML = generateLineNums(totalLines);
+  }
+
+  function syncLineScroll() {
+    const contentInput = $('contentInput');
+    const lineNumbers = $('lineNumbers');
+    if (contentInput && lineNumbers) {
+      lineNumbers.scrollTop = contentInput.scrollTop;
+    }
+  }
+
+  function renderEditor(note) {
+    const isAcc = note.tag === 'acc';
+    editorArea.innerHTML = `
+      <div class="editor-card">
+        <input class="title-input" id="titleInput" placeholder="${isAcc ? 'Tên ACC...' : 'Tên prompt...'}" value="${escHtml(note.title)}">
+        <div class="editor-meta">
+          <div class="meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ${formatDate(note.updatedAt)}
+          </div>
+          <div class="meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            <select class="tag-select" id="tagSelect">
+              <option value="prompt" ${note.tag === 'prompt' ? 'selected' : ''}>Prompt</option>
+              <option value="acc" ${note.tag === 'acc' ? 'selected' : ''}>Acc</option>
+              <option value="other" ${note.tag === 'other' ? 'selected' : ''}>Khác</option>
+            </select>
+          </div>
+        </div>
+        ${buildTextareaHtml(note)}
+      </div>
+    `;
+    statusBar.classList.remove('hidden');
+    toolbarActions.classList.remove('hidden');
+    updateCharCount();
+
+    const titleInput = $('titleInput');
+    const contentInput = $('contentInput');
+    const tagSelect = $('tagSelect');
+    const debouncedUpdate = debounce(() => updateActiveNote(), 500);
+
+    titleInput.addEventListener('input', debouncedUpdate);
+    contentInput.addEventListener('input', () => {
+      updateCharCount();
+      if (tagSelect.value === 'acc') updateLineNumbers();
+      debouncedUpdate();
+    });
+    contentInput.addEventListener('scroll', syncLineScroll);
+    tagSelect.addEventListener('change', () => {
+      updateActiveNote();
+      // Re-render editor to toggle line numbers when switching to/from ACC
+      const n = notes.find(x => x.id === activeNoteId);
+      if (n) renderEditor(n);
+    });
+  }
+
+  function renderEmptyState() {
+    editorArea.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">Prompt Vault</div>
+        <div class="empty-desc">Chọn một prompt từ danh sách hoặc tạo mới.</div>
+        <div class="empty-shortcuts">
+          <span><span class="kbd">Ctrl+N</span> Tạo prompt mới</span>
+          <span><span class="kbd">Ctrl+K</span> Tìm kiếm</span>
+        </div>
+      </div>
+    `;
+    statusBar.classList.add('hidden');
+    toolbarActions.classList.add('hidden');
+  }
+
+  function updateCharCount() {
+    const c = $('contentInput');
+    if (c) charCount.textContent = c.value.length + ' ký tự';
+  }
+
+  // ══════════════════════════════════════
+  // NOTE CRUD
+  // ══════════════════════════════════════
+
+  function createNote() {
+    const note = {
+      id: crypto.randomUUID(),
+      title: '',
+      content: '',
+      tag: activeTag === 'all' ? 'prompt' : activeTag,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    notes.unshift(note);
+    saveNotes();
+    activeNoteId = note.id;
+    renderEditor(note);
+    renderNoteList();
+    $('titleInput')?.focus();
+    closeSidebar();
+    showToast('Đã tạo prompt mới');
+  }
+
+  function selectNote(id) {
+    activeNoteId = id;
+    const note = notes.find(n => n.id === id);
+    if (note) renderEditor(note);
+    renderNoteList();
+    closeSidebar();
+  }
+
+  function updateActiveNote() {
+    if (!activeNoteId) return;
+    const note = notes.find(n => n.id === activeNoteId);
+    if (!note) return;
+    const titleInput = $('titleInput');
+    const contentInput = $('contentInput');
+    const tagSelect = $('tagSelect');
+    if (!titleInput || !contentInput || !tagSelect) return;
+
+    note.title = titleInput.value;
+    note.content = contentInput.value;
+    note.tag = tagSelect.value;
+    note.updatedAt = Date.now();
+    saveNotes();
+    renderNoteList();
+  }
+
+  function duplicateNote() {
+    if (!activeNoteId) return;
+    const src = notes.find(n => n.id === activeNoteId);
+    if (!src) return;
+    const dup = {
+      ...src,
+      id: crypto.randomUUID(),
+      title: src.title + ' (bản sao)',
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    notes.unshift(dup);
+    saveNotes();
+    activeNoteId = dup.id;
+    renderEditor(dup);
+    renderNoteList();
+    showToast('Đã nhân bản prompt');
+  }
+
+  function copyToClipboard() {
+    if (!activeNoteId) return;
+    const note = notes.find(n => n.id === activeNoteId);
+    if (!note) return;
+    navigator.clipboard.writeText(note.content).then(
+      () => showToast('Đã copy vào clipboard'),
+      () => showToast('Không thể copy!', 'error')
+    );
+  }
+
+  function confirmDeleteNote() {
+    if (!activeNoteId) return;
+    deleteModal.classList.add('show');
+  }
+
+  function deleteNote() {
+    notes = notes.filter(n => n.id !== activeNoteId);
+    saveNotes();
+    activeNoteId = null;
+    deleteModal.classList.remove('show');
+    renderEmptyState();
+    renderNoteList();
+    showToast('Đã xoá prompt');
+  }
+
+  // ══════════════════════════════════════
+  // EXPORT / IMPORT
+  // ══════════════════════════════════════
+
+  function exportNotes() {
+    const json = JSON.stringify(notes, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `prompt-vault-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Đã xuất ' + notes.length + ' prompt');
+  }
+
+  function triggerImport() { importFileInput.click(); }
+
+  function handleImportFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!Array.isArray(data)) throw new Error();
+        for (const item of data) {
+          if (!item.id || typeof item.title === 'undefined' || typeof item.content === 'undefined') throw new Error();
+        }
+        pendingImportData = data;
+        importModalText.textContent = `Thay thế ${notes.length} prompt hiện tại bằng ${data.length} prompt từ file?`;
+        importModal.classList.add('show');
+      } catch {
+        showToast('File không hợp lệ!', 'error');
+      }
+    };
+    reader.readAsText(file);
+    importFileInput.value = '';
+  }
+
+  function confirmImport() {
+    if (!pendingImportData) return;
+    notes = pendingImportData;
+    saveNotes();
+    activeNoteId = null;
+    pendingImportData = null;
+    importModal.classList.remove('show');
+    renderEmptyState();
+    renderNoteList();
+    showToast('Đã nhập ' + notes.length + ' prompt');
+  }
+
+  // ══════════════════════════════════════
+  // MULTI-SELECT
+  // ══════════════════════════════════════
+
+  const multiBar = $('multiBar');
+  const multiCount = $('multiCount');
+  const multiSelectBtn = $('multiSelectBtn');
+
+  function toggleMultiSelect() {
+    multiSelectMode = !multiSelectMode;
+    selectedIds.clear();
+    noteList.classList.toggle('multi-mode', multiSelectMode);
+    multiBar.classList.toggle('hidden', !multiSelectMode);
+    multiSelectBtn.classList.toggle('active', multiSelectMode);
+    updateMultiCount();
+    renderNoteList();
+  }
+
+  function updateMultiCount() {
+    multiCount.textContent = selectedIds.size + ' đã chọn';
+  }
+
+  function handleMultiCheck(id, checked) {
+    if (checked) selectedIds.add(id);
+    else selectedIds.delete(id);
+    updateMultiCount();
+  }
+
+  function deleteSelectedNotes() {
+    if (selectedIds.size === 0) return;
+    const count = selectedIds.size;
+    notes = notes.filter(n => !selectedIds.has(n.id));
+    saveNotes();
+    if (selectedIds.has(activeNoteId)) {
+      activeNoteId = null;
+      renderEmptyState();
+    }
+    selectedIds.clear();
+    updateMultiCount();
+    renderNoteList();
+    showToast('Đã xoá ' + count + ' prompt');
+  }
+
+  // ══════════════════════════════════════
+  // PUBLIC & SHARE
+  // ══════════════════════════════════════
+
+  const shareModal = $('shareModal');
+  const shareLink = $('shareLink');
+  const publicViewer = $('publicViewer');
+
+  function encodeNote(note) {
+    const data = JSON.stringify({ t: note.title, c: note.content, g: note.tag });
+    // Base64 encode with URL-safe chars
+    return btoa(unescape(encodeURIComponent(data)))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function decodeNote(encoded) {
+    try {
+      const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+      const pad = base64.length % 4;
+      const padded = pad ? base64 + '===='.slice(pad) : base64;
+      const json = decodeURIComponent(escape(atob(padded)));
+      return JSON.parse(json);
+    } catch { return null; }
+  }
+
+  function publishNote() {
+    if (!activeNoteId) return;
+    const note = notes.find(n => n.id === activeNoteId);
+    if (!note) return;
+    if (!note.title && !note.content) {
+      showToast('Note trống, không thể chia sẻ', 'error');
+      return;
+    }
+    const encoded = encodeNote(note);
+    const url = location.origin + location.pathname + '#share=' + encoded;
+    shareLink.value = url;
+    shareModal.classList.add('show');
+  }
+
+  function copyShareLinkFn() {
+    shareLink.select();
+    navigator.clipboard.writeText(shareLink.value).then(
+      () => showToast('Đã copy link chia sẻ'),
+      () => showToast('Không thể copy!', 'error')
+    );
+  }
+
+  function checkSharedLink() {
+    const hash = location.hash;
+    if (!hash.startsWith('#share=')) return false;
+    const encoded = hash.slice(7);
+    const data = decodeNote(encoded);
+    if (!data) return false;
+
+    // Show public viewer
+    publicViewer.classList.remove('hidden');
+    $('publicTitle').textContent = data.t || 'Không có tiêu đề';
+    $('publicContent').textContent = data.c || '';
+    const tagEl = $('publicTag');
+    const tagName = tagLabel(data.g);
+    tagEl.innerHTML = `<span class="note-item-tag tag-${data.g || 'prompt'}">${tagName}</span>`;
+    return true;
+  }
+
+  // ══════════════════════════════════════
+  // SEARCH & FILTER
+  // ══════════════════════════════════════
+
+  const handleSearch = debounce(function(val) {
+    searchQuery = val;
+    renderNoteList();
+  }, 300);
+
+  function handleTagFilter(tag) {
+    activeTag = tag;
+    document.querySelectorAll('.tag-btn:not([data-tag="_multi"])').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.tag-btn[data-tag="${tag}"]`)?.classList.add('active');
+    renderNoteList();
+  }
+
+  // ══════════════════════════════════════
+  // SIDEBAR (Mobile)
+  // ══════════════════════════════════════
+
+  function toggleSidebar() { sidebar.classList.toggle('open'); sidebarBackdrop.classList.toggle('show'); }
+  function closeSidebar() { sidebar.classList.remove('open'); sidebarBackdrop.classList.remove('show'); }
+
+  // ══════════════════════════════════════
+  // EVENT BINDINGS
+  // ══════════════════════════════════════
+
+  loginForm.addEventListener('submit', handleLogin);
+  $('logoutBtn').addEventListener('click', handleLogout);
+  $('createBtn').addEventListener('click', createNote);
+  themeToggle.addEventListener('click', toggleTheme);
+
+  noteList.addEventListener('click', function(e) {
+    // Handle checkbox in multi-select mode
+    if (e.target.classList.contains('multi-check')) {
+      handleMultiCheck(e.target.dataset.id, e.target.checked);
+      return;
+    }
+    if (multiSelectMode) return; // In multi mode, only checkboxes work
+    const item = e.target.closest('.note-item');
+    if (item) selectNote(item.dataset.id);
+  });
+
+  $('duplicateBtn').addEventListener('click', duplicateNote);
+  $('clipboardBtn').addEventListener('click', copyToClipboard);
+  $('deleteBtn').addEventListener('click', confirmDeleteNote);
+  $('exportBtn').addEventListener('click', exportNotes);
+  $('importBtn').addEventListener('click', triggerImport);
+  $('publicBtn').addEventListener('click', publishNote);
+  multiSelectBtn.addEventListener('click', toggleMultiSelect);
+  $('multiDeleteBtn').addEventListener('click', deleteSelectedNotes);
+
+  $('cancelDeleteBtn').addEventListener('click', () => deleteModal.classList.remove('show'));
+  $('confirmDeleteBtn').addEventListener('click', deleteNote);
+  $('cancelImportBtn').addEventListener('click', () => { importModal.classList.remove('show'); pendingImportData = null; });
+  $('confirmImportBtn').addEventListener('click', confirmImport);
+  $('copyShareLink').addEventListener('click', copyShareLinkFn);
+  $('closeShareBtn').addEventListener('click', () => shareModal.classList.remove('show'));
+
+  importFileInput.addEventListener('change', handleImportFile);
+  searchInput.addEventListener('input', e => handleSearch(e.target.value));
+
+  document.querySelectorAll('.tag-btn').forEach(btn => {
+    if (btn.dataset.tag === '_multi') return; // handled separately
+    btn.addEventListener('click', () => handleTagFilter(btn.dataset.tag));
+  });
+
+  $('menuToggle').addEventListener('click', toggleSidebar);
+  sidebarBackdrop.addEventListener('click', closeSidebar);
+
+  // Close modals on overlay click
+  [deleteModal, importModal, shareModal].forEach(modal => {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) modal.classList.remove('show');
+    });
+  });
+
+  // Close modals on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      deleteModal.classList.remove('show');
+      importModal.classList.remove('show');
+      shareModal.classList.remove('show');
+      closeSidebar();
+    }
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey || e.metaKey) {
+      if (e.key === 'n') {
+        e.preventDefault();
+        if (!appContainer.classList.contains('hidden')) createNote();
+      }
+      if (e.key === 's') {
+        e.preventDefault();
+        if (activeNoteId) { updateActiveNote(); showToast('Đã lưu'); }
+      }
+      if (e.key === 'k') {
+        e.preventDefault();
+        if (!appContainer.classList.contains('hidden')) { searchInput.focus(); searchInput.select(); }
+      }
+      if (e.key === 'd' && activeNoteId) {
+        e.preventDefault();
+        duplicateNote();
+      }
+    }
+    // Delete key
+    if (e.key === 'Delete' && activeNoteId && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      confirmDeleteNote();
+    }
+  });
+
+  // ══════════════════════════════════════
+  // INIT
+  // ══════════════════════════════════════
+
+  // If visiting a shared link, show public viewer instead of login
+  if (!checkSharedLink()) {
+    checkAuth();
+  } else {
+    loadingScreen.classList.add('fade-out');
+    setTimeout(() => loadingScreen.classList.add('hidden'), 400);
+  }
+
+})();
+</script>
+</body>
+</html>

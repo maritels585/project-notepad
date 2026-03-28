@@ -1,0 +1,35 @@
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code internal
+.claude/
+
+# Plans (internal development notes)
+plans/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies (if added later)
+node_modules/
+package-lock.json
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build output (if added later)
+dist/
+build/
+out/
